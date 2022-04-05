@@ -8,6 +8,8 @@ using namespace std;
 int main(int argc, char *argv[])
 {
    QApplication a(argc, argv);
+   MainWindow w;
+   w.show();
 //	cout << "Usage:" << endl;
 //	cout << "!login[username][password] - log in" << endl;
 //	cout << "!logout - log out" << endl;
@@ -22,15 +24,15 @@ int main(int argc, char *argv[])
 //    cli->parseCommand();
 //  }
 
-  QTranslator myappTranslator;
-  myappTranslator.load("translations/my_ru.qm");
-  a.installTranslator(&myappTranslator);
+//  QTranslator myappTranslator;
+//  myappTranslator.load("translations/my_ru.qm");
+//  a.installTranslator(&myappTranslator);
 
-  QTranslator defaultTranslator;
-  defaultTranslator.load("translations/qt_ru.qm");
-  a.installTranslator(&defaultTranslator);
+//  QTranslator defaultTranslator;
+//  defaultTranslator.load("translations/qt_ru.qm");
+//  a.installTranslator(&defaultTranslator);
 
-  MainWindow::createClient();
+//  MainWindow::createClient();
 
   return a.exec();
 }
