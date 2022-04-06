@@ -2,6 +2,9 @@
 #define LOGINFORM_H
 
 #include <QWidget>
+#include <memory.h>
+
+#include "Database.h"
 
 namespace Ui {
 class LoginForm;
@@ -15,8 +18,12 @@ public:
     explicit LoginForm(QWidget *parent = nullptr);
     ~LoginForm();
 
+    void setDatabase(const std::shared_ptr<Database> &newDbPtr);
+
 signals:
     void registerRequested();
+    void accepted(int userID, QString userName);
+    void rejected();
 
 private slots:
     void on_buttonBox_accepted();
@@ -27,6 +34,7 @@ private slots:
 
 private:
     Ui::LoginForm *ui;
+    std::shared_ptr<Database> m_dbPtr{nullptr};
 };
 
 #endif // LOGINFORM_H
