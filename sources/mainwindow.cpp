@@ -1,12 +1,17 @@
 #include "mainwindow.h"
 #include "startscreen.h"
 #include "ui_mainwindow.h"
-
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QDialogButtonBox>
+#include <QListWidget>
 int MainWindow::kInstanceCount = 0;
 
-MainWindow::MainWindow(std::shared_ptr<Database> dbPtr, QWidget *parent) :
+MainWindow::MainWindow(int userID, QString userName, std::shared_ptr<Database> dbPtr, QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+  m_userID(userID),
+  m_userName(userName)
 {
     ++kInstanceCount;
 
@@ -32,7 +37,7 @@ MainWindow *MainWindow::createClient(std::shared_ptr<Database> dbPtr)
     auto result = s.exec();
     if(result == QDialog::Rejected) return nullptr;
 
-    auto w = new MainWindow(dbPtr);
+    auto w = new MainWindow(s.userID(), s.userName(), dbPtr);
     w->setAttribute(Qt::WA_DeleteOnClose);
     return w;
 }
@@ -46,13 +51,37 @@ void MainWindow::on_messageLineEdit_returnPressed()
 
 void MainWindow::on_sendMessageButton_clicked()
 {
-
+    m_dbPtr->addChatMessage(m_userName.toStdString(), ui->messageLineEdit->text().toStdString());
 }
 
 
 void MainWindow::on_privateMessageSendButton_clicked()
 {
+    QDialog dial(this);
+    dial.setModal(true);
 
+    auto l = new QVBoxLayout();
+    dial.setLayout(l);
+    auto userListWdg = new QListWidget(&dial);
+    l->addWidget(userListWdg);
+    auto buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dial);
+    l->addWidget(buttonBox);
+
+    connect(buttonBox, &QDialogButtonBox::accepted, &dial, &QDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, &dial, &QDialog::reject);
+
+    auto userList = m_dbPtr->getUserList();
+
+    for(auto user : userList)
+        userListWdg->addItem(QString::fromStdString(user));
+
+    userListWdg->setCurrentRow(0);
+
+    auto result = dial.exec();
+    if(result == QDialog::Accepted && userListWdg->currentItem())
+    {
+        m_dbPtr->addPrivateMessage(m_userName.toStdString(), userListWdg->currentItem()->text().toStdString(), ui->messageLineEdit->text().toStdString());
+    }
 }
 
 
