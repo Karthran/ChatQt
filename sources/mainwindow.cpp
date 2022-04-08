@@ -2,11 +2,16 @@
 #include "startscreen.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(std::shared_ptr<Database> dbPtr, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    if(dbPtr)
+        m_dbPtr = dbPtr;
+    else
+        m_dbPtr = std::make_shared<Database>();
 }
 
 MainWindow::~MainWindow()
@@ -14,11 +19,13 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-MainWindow *MainWindow::createClient()
+MainWindow *MainWindow::createClient(std::shared_ptr<Database> dbPtr)
 {
-    StartScreen s;
-    s.exec();
-    return nullptr;
+    StartScreen s(dbPtr);
+    auto result = s.exec();
+    if(result == QDialog::Rejected) return nullptr;
+
+    return new MainWindow(dbPtr);
 }
 
 
@@ -42,7 +49,8 @@ void MainWindow::on_privateMessageSendButton_clicked()
 
 void MainWindow::on_actionOpen_another_client_triggered()
 {
-    createClient();
+    auto w = createClient(m_dbPtr);
+    w->show();
 }
 
 

@@ -7,7 +7,7 @@
 
 class Database
 {
-	vector<User> _users;
+    vector<User> _users;
 	vector<Message> _messages;
 	unordered_map<string, int> _usersMapByName;
 	int searchUserByName(string);

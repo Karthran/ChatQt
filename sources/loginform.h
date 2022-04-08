@@ -34,7 +34,7 @@ private slots:
 
 private:
     Ui::LoginForm *ui;
-    std::shared_ptr<Database> m_dbPtr{nullptr};
+    std::shared_ptr<Database> m_dbPtr;
 };
 
 #endif // LOGINFORM_H
