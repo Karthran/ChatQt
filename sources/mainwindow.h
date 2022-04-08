@@ -18,6 +18,7 @@ public:
 
     static MainWindow* createClient(std::shared_ptr<Database> dbPtr = nullptr);
 
+    static int kInstanceCount;
 private slots:
     void on_messageLineEdit_returnPressed();
 
