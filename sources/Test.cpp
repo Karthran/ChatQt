@@ -3,10 +3,12 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QTranslator>
+
 using namespace std;
 
 int main(int argc, char *argv[])
 {
+
    QApplication a(argc, argv);
 
    auto w = MainWindow::createClient();
